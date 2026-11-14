@@ -61,3 +61,20 @@ test('normal run is calibrated to the Ensiab baseline time till discharge (265 m
   assert.ok(r.avgTimeToLeaveMin >= 235 && r.avgTimeToLeaveMin <= 295, `got ${r.avgTimeToLeaveMin}`);
   assert.ok(r.pctLeftBeforeNoon >= 0 && r.pctLeftBeforeNoon <= 100);
 });
+
+test('patients who never leave count toward time-to-leave instead of vanishing', () => {
+  const staff = defaultStaff();
+  staff.A.pharmacist = 0; staff.B.pharmacist = 0;
+  const none = runSimulation({ days: 10, staff });
+  const normal = runSimulation({ days: 10 });
+  assert.ok(none.avgTimeToLeaveMin > normal.avgTimeToLeaveMin, `${none.avgTimeToLeaveMin} vs ${normal.avgTimeToLeaveMin}`);
+  assert.ok(none.neverLeft > 0);
+  assert.equal(normal.neverLeft, 0);
+});
+
+test('unplaced patients are broken down by reason and the parts add up', () => {
+  const r = runSimulation({ days: 200 });
+  assert.equal(r.unplacedIsolation + r.unplacedAfter18 + r.unplacedOther, r.unplaced);
+  assert.equal(r.unplacedIsolation, 118);
+  assert.equal(r.unplacedAfter18, 76);
+});

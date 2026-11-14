@@ -39,7 +39,11 @@ function render() {
 }
 
 store.subscribe(render);
-window.addEventListener('hashchange', () => { render(); view.focus({ preventScroll: true }); });
+window.addEventListener('hashchange', () => { store.stop(); render(); view.focus({ preventScroll: true }); });
+// While the clock plays, the view re-renders every 250 ms; pause it as soon as someone starts interacting.
+view.addEventListener('pointerdown', e => {
+  if (store.playing && !e.target.closest('[data-action="pause"]')) { store.stop(); store.notify(); }
+});
 
 roleEl.addEventListener('change', () => {
   store.role = roleEl.value;

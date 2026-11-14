@@ -10,6 +10,7 @@ export const store = {
   selected: null,       // bed ID shown in the detail panel
   plan: null,           // last engine result shown on the Engine screen
   target: null,         // the target the charge nurse is editing (null = auto)
+  targetError: null,
   decisions: [],        // approved / rejected plans, newest first
   playing: null,        // interval id while the clock runs
 
@@ -24,7 +25,7 @@ export const store = {
   },
   reset() {
     this.stop();
-    Object.assign(this, { state: createLiveState(), selected: null, plan: null, target: null, decisions: [] });
+    Object.assign(this, { state: createLiveState(), selected: null, plan: null, target: null, targetError: null, decisions: [] });
     this.notify();
   },
   play() {

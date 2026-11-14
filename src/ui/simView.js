@@ -45,7 +45,7 @@ function comparisonCard() {
     <ul class="small">
       <li>The gain comes only from <b>order</b>: FASAH serves first the beds that waiting ED patients can use. Same staff, same discharge decisions.</li>
       <li>Borrowing never triggers at full staffing (${comparison[2].borrowsPerDay} per day), because the cleaning queue never reaches 3. In this hospital the bottleneck is <b>pharmacy</b> (see the Delay Analyzer).</li>
-      <li>Patients “not placed by 07:00”: in the normal run, 194 of 203 (96%) need an isolation bed or arrive after 18:00, when no matching bed is freed that day. They count with their full wait.</li>
+      <li>Patients “not placed by 07:00”: in the normal run, ${normal.unplacedIsolation + normal.unplacedAfter18} of ${normal.unplaced} need an isolation bed (${normal.unplacedIsolation}) or arrive after 18:00 (${normal.unplacedAfter18}), when no matching bed is freed that day. They count with their full wait.</li>
       <li>This is a simulated result on synthetic data. It does not prove an effect in a real hospital; that needs the Phase 2 pilot.</li>
     </ul>
   </div>`;
@@ -66,11 +66,11 @@ function whatIfCard() {
     const { result: r, baseline: b } = res;
     const dH = (r.avgBoardingH - b.avgBoardingH) * 60;
     out = `<div class="compare">
-      <div class="box"><span class="muted small">Baseline (normal order, current staff)</span><b>${b.avgBoardingH.toFixed(2)} h · ${b.pctWithin6h.toFixed(1)}%</b></div>
+      <div class="box"><span class="muted small">Baseline (normal order, default staff)</span><b>${b.avgBoardingH.toFixed(2)} h · ${b.pctWithin6h.toFixed(1)}%</b></div>
       <span class="muted">→</span>
       <div class="box"><span class="muted small">Your scenario</span><b>${r.avgBoardingH.toFixed(2)} h · ${r.pctWithin6h.toFixed(1)}%</b></div></div>
       <p class="headline">${signed(dH, ' min', 0)} average ED boarding · ${signed(r.pctWithin6h - b.pctWithin6h, ' points')} within 6 h</p>
-      <p class="muted small">Average ED boarding · % placed within 6 h · ${r.days} days · approval → leave ${b.avgTimeToLeaveMin} → ${r.avgTimeToLeaveMin} min${r.borrowsPerDay ? ` · ${r.borrowsPerDay} borrows/day` : ''}</p>`;
+      <p class="muted small">Average ED boarding · % placed within 6 h · ${r.days} days · approval → leave ${b.avgTimeToLeaveMin} → ${r.avgTimeToLeaveMin} min${r.neverLeft ? ` (${r.neverLeft} patients never left, counted until 07:00)` : ''}${r.borrowsPerDay ? ` · ${r.borrowsPerDay} borrows/day` : ''}</p>`;
   }
   return `<div class="card" id="whatif">
     <h2>What-if planner</h2>
@@ -105,7 +105,7 @@ export function renderSim(el) {
       <p><b>ED boarding</b> = time a bed is assigned − time the patient was ready for admission. A ready bed goes at once to the longest-waiting patient it suits (same sex and isolation need). Patients still waiting at 07:00 count with their full wait.</p>
       <p><b>Policies.</b> Normal: every queue first-come. FASAH: each queue serves first the bed that the longest-waiting ED patient type can use, then the bed closest to ready. FASAH + borrow: also borrows 1 spare housekeeper for 2 h when a ward's cleaning queue reaches 3.</p>
       <p><b>Fairness:</b> every policy sees exactly the same generated days, including each step's duration (seed ${CONFIG.sim.seed}).</p>
-      <p><b>Calibration:</b> pharmacy and transport times are set so the normal run reproduces the 265-minute “time till discharge” measured before the Ensiab project in six Saudi hospitals. Our run gives ${comparison ? comparison[0].avgTimeToLeaveMin : '…'} min. The 6-hour placement target also comes from that project: ${ENSIAB}.</p>
+      <p><b>Calibration:</b> pharmacy and transport times are set so the normal run reproduces the 265-minute “time till discharge” measured before the Ensiab project in six Saudi hospitals (the paper does not define its start and end; we assume discharge approval → patient leaves). Our run gives ${comparison ? comparison[0].avgTimeToLeaveMin : '…'} min. The 6-hour placement target also comes from that project: ${ENSIAB}.</p>
       <p><b>Not calibrated:</b> overall ED demand. Our hospital is calmer than the Ensiab hospitals were (they averaged 16.6 h of boarding before their project), so compare the policies with each other, not with Ensiab's numbers.</p>`)}`;
 }
 

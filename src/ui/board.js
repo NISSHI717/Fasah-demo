@@ -159,14 +159,14 @@ export function boardAction(action, target) {
   if (action === 'approve') {
     const needsPharmacy = document.getElementById('need-ph').checked;
     const needsTransport = document.getElementById('need-tr').checked;
-    return store.set(() => approve(s, id, { needsPharmacy, needsTransport }, 'nurse (for doctor)'));
+    return store.set(st => { approve(s, id, { needsPharmacy, needsTransport }, 'nurse (for doctor)'); st.plan = null; });
   }
   if (action === 'complete') {
     const step = target.dataset.step;
-    return store.set(() => completeStep(s, id, step, `nurse for ${DEPT[step]}`));
+    return store.set(st => { completeStep(s, id, step, `nurse for ${DEPT[step]}`); st.plan = null; });
   }
   if (action === 'assign') {
     const pid = document.getElementById('assign-to').value;
-    return store.set(() => assignBed(s, id, pid));
+    return store.set(st => { assignBed(s, id, pid); st.plan = null; });
   }
 }

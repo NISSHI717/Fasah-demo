@@ -112,14 +112,24 @@ export function simulateDay(day, policyKey, staff = defaultStaff()) {
     ...Object.values(s.queues).flatMap(w => w.cleaning),
     ...s.active.filter(t => t.step === 'cleaning'),
   ];
-  const timeToLeave = leaveBeds.map(t => t.requestedAt - approvedAt[t.bedId]);
+  // Patients still waiting to leave at the end count with their full wait (censored).
+  const stuck = Object.keys(approvedAt).filter(id => s.beds[id].status === 'discharge_pending');
+  const timeToLeave = [
+    ...leaveBeds.map(t => t.requestedAt - approvedAt[t.bedId]),
+    ...stuck.map(id => sim.end - approvedAt[id]),
+  ];
   const leftBeforeNoon = leaveBeds.filter(t => t.requestedAt < 720).length;
-  return { boarding, unplaced: s.ed.length, log: s.log, borrowed: s.borrowed.length, timeToLeave, leftBeforeNoon };
+  const unplacedIsolation = s.ed.filter(p => p.isolation).length;
+  const unplacedAfter18 = s.ed.filter(p => !p.isolation && p.arrivedAt >= 1080).length;
+  return {
+    boarding, unplaced: s.ed.length, log: s.log, borrowed: s.borrowed.length, timeToLeave, leftBeforeNoon,
+    neverLeft: stuck.length, unplacedIsolation, unplacedAfter18,
+  };
 }
 
 export function runSimulation({ days = sim.days, seed = sim.seed, policy = 'normal', staff = defaultStaff() } = {}) {
   const all = [], leave = [];
-  let unplaced = 0, borrows = 0, beforeNoon = 0;
+  let unplaced = 0, borrows = 0, beforeNoon = 0, neverLeft = 0, unplacedIsolation = 0, unplacedAfter18 = 0;
   for (let i = 0; i < days; i++) {
     const r = simulateDay(generateDay(createRng(seed * 1000 + i)), policy, staff);
     all.push(...r.boarding);
@@ -127,6 +137,9 @@ export function runSimulation({ days = sim.days, seed = sim.seed, policy = 'norm
     borrows += r.borrowed;
     leave.push(...r.timeToLeave);
     beforeNoon += r.leftBeforeNoon;
+    neverLeft += r.neverLeft;
+    unplacedIsolation += r.unplacedIsolation;
+    unplacedAfter18 += r.unplacedAfter18;
   }
   const mean = all.reduce((a, b) => a + b, 0) / all.length;
   return {
@@ -134,7 +147,8 @@ export function runSimulation({ days = sim.days, seed = sim.seed, policy = 'norm
     patients: all.length,
     avgBoardingH: Math.round((mean / 60) * 100) / 100,
     pctWithin6h: Math.round((all.filter(b => b <= sim.targetMinutes).length / all.length) * 1000) / 10,
-    unplaced,
+    unplaced, unplacedIsolation, unplacedAfter18, unplacedOther: unplaced - unplacedIsolation - unplacedAfter18,
+    neverLeft,
     borrowsPerDay: Math.round((borrows / days) * 100) / 100,
     avgTimeToLeaveMin: Math.round(leave.reduce((a, b) => a + b, 0) / Math.max(1, leave.length)),
     pctLeftBeforeNoon: Math.round((beforeNoon / Math.max(1, leave.length)) * 1000) / 10,

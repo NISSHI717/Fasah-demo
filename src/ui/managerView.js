@@ -8,6 +8,16 @@ import { hours } from './util.js';
 
 const NAME = { pharmacy: 'Pharmacy', transport: 'Transport', cleaning: 'Cleaning' };
 let today = null; // one synthetic full day, computed once
+let allDays = null; // the same analysis over every simulated day
+
+function getAllDays() {
+  if (!allDays) {
+    const log = [];
+    for (let i = 0; i < CONFIG.sim.days; i++) log.push(...simulateDay(generateDay(createRng(CONFIG.sim.seed * 1000 + i)), 'normal').log);
+    allDays = analyzeDelays(log);
+  }
+  return allDays;
+}
 
 function getToday() {
   if (!today) {
@@ -36,6 +46,7 @@ export function renderManager(el) {
     <div class="card" id="analyzer-headline">
       <p class="headline">${a.headline}</p>
       <p class="muted small">${log.length} completed steps · ${boarding.length} ED admissions · average ED boarding ${hours(avg(boarding))}</p>
+      <p class="small">Across all ${CONFIG.sim.days} simulated days: ${STEPS.map(s => `${NAME[s].toLowerCase()} ${getAllDays().share[s]}%`).join(' · ')} of waiting time.</p>
       <h3>Share of all waiting time</h3>
       ${STEPS.map(s => `<div class="bar-row"><span>${NAME[s]}</span><div class="bar"><span style="width:${a.share[s]}%"></span></div><b class="mono">${a.share[s]}%</b></div>`).join('')}
     </div>

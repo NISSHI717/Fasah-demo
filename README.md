@@ -86,13 +86,13 @@ Each calculation screen has a **"How this is calculated"** panel showing the for
 | Needs | 70% need discharge medication, 40% need hospital transport |
 | Simulated day | 10 discharge approvals per ward (08:00–14:00); 16 ED admissions (07:00–21:00), 10% needing isolation |
 
-**Calibration:** pharmacy and transport times are set so the simulated normal hospital reproduces Ensiab's measured baseline **time till discharge of 265 minutes** (our run gives 276). A test keeps it within 235–295.
+**Calibration:** pharmacy and transport times are set so the simulated normal hospital reproduces Ensiab's measured baseline **time till discharge of 265 minutes** (our run gives 276). A test keeps it within 235–295. The paper does not define where that interval starts and ends. We assume it runs from discharge approval to the patient leaving the bed.
 
 **Tools:** HTML, CSS and JavaScript (no frameworks, nothing to install), Node.js built-in test runner, GitHub Pages hosting.
 
 ## 7. Testing & Validation
 
-**Automated tests: 45, all passing.** They cover the discharge chain, staffing limits, safety rules, predictions, the engine's search order, the simulation's fairness and the calibration. Run them with:
+**Automated tests: 47, all passing.** They cover the discharge chain, staffing limits, safety rules, predictions, the engine's search order, the simulation's fairness and the calibration. Run them with:
 
 ```bash
 npm test        # Node 22+, no install needed
@@ -103,12 +103,12 @@ npm test        # Node 22+, no install needed
 | Policy | Avg ED boarding | Placed within 6 h | Approval → patient leaves |
 |---|---|---|---|
 | Normal (first-come) | 2.79 h | 86.7% | 276 min |
-| FASAH ordering | **2.64 h** | **88.1%** | 274 min |
-| FASAH ordering + borrowing | 2.64 h | 88.1% | 274 min |
+| FASAH ordering | **2.64 h** | **88.1%** | 275 min |
+| FASAH ordering + borrowing | 2.64 h | 88.1% | 275 min |
 
 **What it shows:**
 - FASAH's ordering alone, with the same staff and the same discharge decisions, lowers average ED boarding by about 9 minutes and places 1.4 more patients in every 100 within 6 hours.
-- The **Delay Analyzer** finds that pharmacy causes about 99% of the waiting. Borrowing housekeepers therefore never triggers.
+- The **Delay Analyzer** finds that pharmacy causes most of the waiting (93% across the 200 days, 99% on the day shown). Borrowing housekeepers therefore never triggers.
 - In the **What-if planner**, one extra pharmacist per ward cuts average boarding to **1.80 h** and approval-to-leave to **140 min**. Ensiab reached 117 min after their project.
 
 **What it does not show:** any effect in a real hospital. The data are synthetic, overall ED demand is not calibrated (our hospital is calmer than the Ensiab hospitals were), and no real staff have used the tool. Those questions belong to the Phase 2 pilot.
@@ -158,7 +158,7 @@ Browsers block JavaScript modules opened straight from a file, so serve the fold
 
 ```bash
 python3 -m http.server 8000   # then open http://localhost:8000
-npm test                      # 45 automated tests
+npm test                      # 47 automated tests
 ```
 
 ### Code map

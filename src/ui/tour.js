@@ -75,11 +75,15 @@ export function afterRender() {
   }
 }
 
-export function startTour(at = 0) {
+/** Rebuild the story up to step n (0-based) from a fresh 11:00 board, then show it. */
+function goTo(n) {
   store.reset();
-  index = at;
+  for (let i = 0; i < n; i++) { STEPS[i].before?.(); STEPS[i].after?.(); }
+  index = n;
   show();
 }
+
+export function startTour(at = 0) { goTo(at); }
 
 function exit() {
   index = -1;
@@ -92,7 +96,7 @@ box.addEventListener('click', e => {
   if (!b) return;
   const a = b.dataset.tour;
   if (a === 'exit') return exit();
-  if (a === 'back' && index > 0) { index--; return show(); }
+  if (a === 'back' && index > 0) return goTo(index - 1);
   if (a === 'next') {
     STEPS[index].after?.();
     if (index === STEPS.length - 1) return exit();
@@ -106,9 +110,5 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && index >= 0
 export function tourFromHash() {
   const n = Number(new URLSearchParams(location.hash.split('?')[1] ?? '').get('tour'));
   if (!n) return;
-  store.reset();
-  index = 0;
-  for (let i = 0; i < n - 1; i++) { STEPS[i].before?.(); STEPS[i].after?.(); }
-  index = Math.min(n, STEPS.length) - 1;
-  show();
+  goTo(Math.min(Math.max(n, 1), STEPS.length) - 1);
 }

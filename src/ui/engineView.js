@@ -23,6 +23,7 @@ function targetCard(t) {
       : '<p class="empty">No ED patients are waiting.</p>'}
     <div class="need-row"><span>ready by</span>
       <input type="time" value="${fmtTime(t.by)}" data-change="by" aria-label="Target time"></div>
+    ${store.targetError ? `<p class="tag bad" role="alert">${store.targetError}</p>` : ''}
     <div class="actions">
       <button class="btn primary" data-action="find" ${t.needs.length ? '' : 'disabled'}>Find smallest change</button>
       ${auto ? '' : '<button class="btn" data-action="auto">Back to auto target</button>'}
@@ -101,20 +102,22 @@ export function renderEngine(el, params) {
 export function engineAction(action, target) {
   const s = store.state;
   if (action === 'find') return store.set(st => { st.plan = findPlan(s, currentTarget()); });
-  if (action === 'auto') return store.set(st => { st.target = null; st.plan = null; });
+  if (action === 'auto') return store.set(st => { st.target = null; st.plan = null; st.targetError = null; });
   if (action === 'count' || action === 'by') {
     return store.set(st => {
       const t = structuredClone(currentTarget());
       if (action === 'count') t.needs[Number(target.dataset.i)].count = Math.max(0, Number(target.value) || 0);
       else {
         const [h, m] = target.value.split(':').map(Number);
-        if (Number.isFinite(h)) {
-          let by = Math.floor(s.now / 1440) * 1440 + h * 60 + (m || 0);
-          if (by < s.now) by += 1440; // a time earlier than now means tomorrow
-          t.by = by;
+        const by = Math.floor(s.now / 1440) * 1440 + h * 60 + (m || 0);
+        if (!Number.isFinite(h) || by <= s.now) {
+          st.targetError = `Pick a time later than now (${fmtTime(s.now)}).`;
+          return;
         }
+        t.by = by;
       }
       t.needs = t.needs.filter(n => n.count > 0);
+      st.targetError = null;
       st.target = t;
       st.plan = null;
     });
