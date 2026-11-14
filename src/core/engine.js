@@ -95,7 +95,10 @@ function describePrioritize(s, bedId) {
   };
 }
 
+let tried = 0; // combinations evaluated by the current findPlan call
+
 function trySet(s, target, changes) {
+  tried++;
   const c = cloneState(s);
   changes.forEach(ch => applyChange(c, ch));
   return { changes, ev: evaluateTarget(c, target) };
@@ -134,6 +137,7 @@ function notesFor(s, target, changes) {
 
 /** Find the smallest set of changes that meets the target. Does not modify s. */
 export function findPlan(s, target) {
+  tried = 0;
   const before = evaluateTarget(s, target);
   const base = { target, before, changes: [], notes: [] };
   if (!target.needs.length) return { ...base, status: 'no_demand', after: before };
@@ -145,6 +149,7 @@ export function findPlan(s, target) {
     .filter(id => target.needs.some(n => suits(bedById(id), n)))
     .sort()
     .map(id => describePrioritize(s, id));
+  base.candidates = candidates.length;
 
   let found = searchPriorities(s, target, [], candidates);
 
@@ -161,7 +166,7 @@ export function findPlan(s, target) {
   }
 
   if (found) {
-    return { ...base, status: 'plan', changes: found.changes, after: found.ev, notes: notesFor(s, target, found.changes) };
+    return { ...base, status: 'plan', changes: found.changes, after: found.ev, notes: notesFor(s, target, found.changes), tried };
   }
 
   let suggestion = 'more_than_one';
@@ -171,5 +176,5 @@ export function findPlan(s, target) {
       if (searchPriorities(s, target, [extra], candidates)) { suggestion = { ward, role }; break outer; }
     }
   }
-  return { ...base, status: 'not_possible', after: before, suggestion };
+  return { ...base, status: 'not_possible', after: before, suggestion, tried };
 }

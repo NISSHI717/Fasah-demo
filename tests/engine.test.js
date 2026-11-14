@@ -33,7 +33,9 @@ test('engine finds the smallest change: prioritize B34 and B28, no extra staff',
   plan.changes.forEach(c => { assert.ok(c.approver); assert.ok(c.reason); });
   assert.equal(plan.after.achievedAt, 740);
   assert.equal(plan.before.achievedAt, 800);
-  assert.match(plan.notes.join(' '), /B35/); // isolation room goes after, no isolation patient waiting
+  assert.match(plan.notes.join(' '), /B35/);
+  assert.ok(plan.tried > 1, `tried ${plan.tried}`);
+  assert.equal(plan.candidates, 6); // isolation room goes after, no isolation patient waiting
 });
 
 test('approving the plan makes the target met', () => {
