@@ -120,6 +120,27 @@ The competition ranks interactive prototypes highest and rewards "clear calculat
 - **"How this is calculated" panel** on Predict, Engine, Delay Analyzer and Simulate screens: a collapsible box showing the formula in plain words and the actual numbers used for the item on screen (durations, queue positions, staff counts, seed, number of days). The 6-hour placement target cites: Alotaibi et al., *Improving hospital flow 'Ensiab Project'*, BMJ Open Quality 2021, doi:10.1136/bmjoq-2021-001505.
 - **"Built vs. next" screen:** what works today (Phase 1 Simulate, every feature in this spec) and what each later phase adds (Pilot: real ward, manual updates with audit trail, usability testing; Integrate: hospital-system interfaces, durations learned from real data; Scale: multi-ward, safety review). It states that all numbers are synthetic and that real outcomes require a pilot.
 
+## 11a. Match to the Filter 2 template
+
+The judges score the Filter 2 deck and check the code on GitHub. The demo and the README must give each template section real material. The README uses the template's headings, in the template's order, so a judge reading the repo sees the same structure as the deck.
+
+| Template section | What the demo / README provides |
+|---|---|
+| Problem & Solution | README summary; the bed board shows the problem (beds blocked by unfinished tasks) |
+| Evidence of Need | README cites Ensiab (16.6 h → 9.5 h boarding, 6 h target) and the Al Hada case-management study; clearly marked as published evidence, not FASAH results |
+| How It Works | See → Coordinate → Predict → Optimize, one screen each; README diagram of the discharge chain and the engine's search order |
+| Innovation & Alternatives | README section; the engine's "smallest safe change + explanation or 'not possible'" is the stated difference |
+| Prototype / Proof of Concept | The live website and its link; guided demo; screenshots in README |
+| Data & Tools Used | Synthetic parameters table (section 3–4), seed, HTML/CSS/JavaScript, Node test runner, GitHub Pages |
+| Testing & Validation | Automated test count and how to run them; simulation results (3 policies, 200 days); what remains untested (real data, real users) |
+| Feasibility & Risks | Stale manual updates, wrong durations, staff rejecting suggestions; how each is handled (audit trail, recalibration in Phase 3, human approval) |
+| Adoption & Sustainability | Roles and who benefits; What-if planner as the hospital's reason to pay |
+| Business model | Points to the deck's canvas (no new content in the demo) |
+| Next Steps | The "Built vs. next" screen |
+| Team & Sources | Team names and roles; sources list |
+
+The site itself does not repeat the deck. Only README sections and the "Built vs. next" screen follow the template.
+
 ## 12. Out of scope
 
 Real authentication, a database, hospital system integration, machine learning, Arabic language, mobile-first layout (it must still be usable on a laptop and readable on a phone).
@@ -132,5 +153,5 @@ styles.css
 src/core/             random, hospital, predict, engine, analyzer, simulate (pure JS)
 src/ui/               one file per screen + guided demo
 tests/                node:test files for src/core
-README.md             what it is, how to open, how to run tests, "synthetic data" note
+README.md             follows the Filter 2 template headings (section 11a); how to open; how to run tests
 ```
