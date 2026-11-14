@@ -102,3 +102,19 @@ test('cloneState is independent', () => {
   approve(c, 'B01', { needsPharmacy: true, needsTransport: false });
   assert.equal(s.beds.B01.status, 'occupied');
 });
+
+test('a prioritized bed goes to the front when it joins a queue, and leaves the list once ready', () => {
+  const s = createState({ now: 600, staff: staffWith({ housekeeper: 0 }) });
+  approve(s, 'B01', { needsPharmacy: false, needsTransport: false });
+  approve(s, 'B02', { needsPharmacy: false, needsTransport: false });
+  s.priority.push('B03');
+  approve(s, 'B03', { needsPharmacy: false, needsTransport: false });
+  assert.deepEqual(s.queues.A.cleaning.map(t => t.bedId), ['B03', 'B01', 'B02']);
+  s.priority.push('B04');
+  approve(s, 'B04', { needsPharmacy: false, needsTransport: false });
+  assert.deepEqual(s.queues.A.cleaning.map(t => t.bedId), ['B03', 'B04', 'B01', 'B02']);
+  s.staff.A.housekeeper = 1;
+  advance(s, 640);
+  assert.equal(s.beds.B03.status, 'ready');
+  assert.deepEqual(s.priority, ['B04']);
+});

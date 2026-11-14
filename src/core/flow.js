@@ -24,6 +24,7 @@ export function createState({ now = 0, staff } = {}) {
     scheduled: [],
     log: [],
     placed: [],
+    priority: [], // bed IDs a charge nurse approved to go first in their queues
   };
 }
 
@@ -32,7 +33,17 @@ export const cloneState = s => structuredClone(s);
 function enqueue(s, bedId, step) {
   const ward = bedById(bedId).ward;
   s.beds[bedId].steps[step] = { requestedAt: s.now, startedAt: null, doneAt: null, updatedBy: null };
-  s.queues[ward][step].push({ bedId, step, ward, requestedAt: s.now });
+  const q = s.queues[ward][step];
+  const task = { bedId, step, ward, requestedAt: s.now };
+  if (s.priority.includes(bedId)) q.splice(frontIndex(s, q), 0, task);
+  else q.push(task);
+}
+
+/** Position right after the prioritized tasks already at the front of a queue. */
+export function frontIndex(s, q) {
+  let i = 0;
+  while (i < q.length && s.priority.includes(q[i].bedId)) i++;
+  return i;
 }
 
 function leave(s, bedId) {
@@ -61,6 +72,7 @@ function finish(s, task, at, by) {
   if (task.step === 'cleaning') {
     bed.status = 'ready';
     bed.readyAt = at;
+    s.priority = s.priority.filter(id => id !== task.bedId);
   } else {
     const d = bed.discharge;
     const pharmacyOk = !d.needsPharmacy || isDone(bed, 'pharmacy');
