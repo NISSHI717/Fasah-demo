@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FASAH — Bed &amp; Patient Flow Demo</title>
+  <meta name="description" content="FASAH Phase 1 (Simulate): a working demo of intelligent hospital bed and patient flow management on synthetic data.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="logo"><span class="ar">فَسْح</span> FASAH</span>
+      <span class="tagline">Make Room for Better Care</span>
+    </div>
+    <div class="synthetic" role="note">Synthetic data — simulated, not measured</div>
+    <div class="controls">
+      <label class="role">View as
+        <select id="role">
+          <option value="judge">Judge view (all screens)</option>
+          <option value="reception">Reception</option>
+          <option value="nurse">Nurse</option>
+          <option value="charge">Charge nurse</option>
+          <option value="manager">Executive doctor / manager</option>
+        </select>
+      </label>
+      <button id="tour-btn" class="btn primary">▶ Guided demo</button>
+    </div>
+  </header>
+  <nav class="tabs" id="tabs" aria-label="Screens"></nav>
+  <main id="view" tabindex="-1"></main>
+  <footer class="foot">
+    FASAH · Medathon 2026 · Phase 1 of 4 (Simulate) · All numbers are synthetic. Real outcomes require a pilot.
+  </footer>
+  <div id="tour" class="tour" hidden></div>
+  <script type="module" src="src/ui/app.js"></script>
+</body>
+</html>
