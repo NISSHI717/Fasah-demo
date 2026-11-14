@@ -6,7 +6,7 @@ import { renderEngine, engineAction } from './engineView.js';
 import { renderManager } from './managerView.js';
 import { renderSim, simAction } from './simView.js';
 import { renderBuilt } from './builtView.js';
-import { startTour, tourFromHash } from './tour.js';
+import { startTour, tourFromHash, afterRender } from './tour.js';
 
 const ALL = ['judge', 'reception', 'nurse', 'charge', 'manager'];
 export const TABS = [
@@ -35,6 +35,7 @@ function render() {
     .map(t => `<a href="#${t.id}"${t === tab ? ' aria-current="page"' : ''}>${t.n ? `<span class="n">${t.n}</span>` : ''}${t.label}</a>`)
     .join('');
   tab.render(view, params);
+  afterRender();
 }
 
 store.subscribe(render);
