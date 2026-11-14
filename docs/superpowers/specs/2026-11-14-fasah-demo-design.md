@@ -113,11 +113,18 @@ From step timestamps in the synthetic log:
 A button on every screen starts a 7-step walkthrough with a highlighted area and a short caption per step:
 1. The board: 36 beds, colors. 2. A bottleneck: Ward B cleaning queue builds up. 3. Predict: readiness ranges and confidence. 4. Auto target from the ED queue. 5. Engine plan + approvers; charge nurse approves; predictions update. 6. Delay Analyzer headline. 7. Simulation results.
 
-## 11. Out of scope
+## 11. Transparency (from the competition's prototype criteria)
+
+The competition ranks interactive prototypes highest and rewards "clear calculations or scientific standards", plus a clear statement of what was built and what remains.
+
+- **"How this is calculated" panel** on Predict, Engine, Delay Analyzer and Simulate screens: a collapsible box showing the formula in plain words and the actual numbers used for the item on screen (durations, queue positions, staff counts, seed, number of days). The 6-hour placement target cites: Alotaibi et al., *Improving hospital flow 'Ensiab Project'*, BMJ Open Quality 2021, doi:10.1136/bmjoq-2021-001505.
+- **"Built vs. next" screen:** what works today (Phase 1 Simulate, every feature in this spec) and what each later phase adds (Pilot: real ward, manual updates with audit trail, usability testing; Integrate: hospital-system interfaces, durations learned from real data; Scale: multi-ward, safety review). It states that all numbers are synthetic and that real outcomes require a pilot.
+
+## 12. Out of scope
 
 Real authentication, a database, hospital system integration, machine learning, Arabic language, mobile-first layout (it must still be usable on a laptop and readable on a phone).
 
-## 12. Repository layout
+## 13. Repository layout
 
 ```
 index.html            app shell + tab navigation
