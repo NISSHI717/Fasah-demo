@@ -2,7 +2,7 @@
 
 **Intelligent hospital bed and patient flow management.** Team FASAH · Medathon 2026 · Track: Healthcare Crowd & Patient Flow Management
 
-**▶ Live demo:** _link added after publishing to GitHub Pages_ · Press **“Guided demo”** for the 3-minute story.
+**▶ Live demo: https://nisshi717.github.io/Fasah-demo/** · Press **“Guided demo”** for the 3-minute story.
 
 > **Everything in this demo uses synthetic data. Results are simulated, not measured.** Published figures we cite are labelled as other teams' results, not FASAH outcomes.
 
