@@ -43,12 +43,14 @@ Step durations in minutes (triangular: fast / typical / slow):
 
 | Step | Fast | Typical | Slow |
 |---|---|---|---|
-| Pharmacy | 20 | 40 | 90 |
-| Transport | 10 | 25 | 60 |
+| Pharmacy | 45 | 90 | 240 |
+| Transport | 20 | 45 | 120 |
 | Cleaning (standard) | 20 | 30 | 45 |
 | Cleaning (isolation) | 45 | 60 | 90 |
 
-Each queue is first-come-first-served unless the engine reorders it. Every step records `requestedAt`, `startedAt`, `doneAt`, and `updatedBy` (role). A nurse updating a step for another department is stored and shown as *"updated by nurse for housekeeping"* (or pharmacy / transport).
+**Calibration:** pharmacy and transport times are set so the Normal simulation reproduces the Ensiab baseline "time till discharge" of 265 ± 104 min (Alotaibi et al. 2021); a test checks the simulated mean stays within 235–295 min. The first draft used 40 and 25 min, which made patients leave ~70 min after approval — far faster than any published Saudi figure.
+
+Each queue is first-come-first-served unless the engine reorders it. A charge nurse can **prioritize** a bed: it jumps to the front of every queue it is in now, and goes first in cleaning when its patient leaves. Every step records `requestedAt`, `startedAt`, `doneAt`, and `updatedBy` (role). A nurse updating a step for another department is stored and shown as *"updated by nurse for housekeeping"* (or pharmacy / transport).
 
 ## 5. Roles (picked from a menu)
 
@@ -94,6 +96,7 @@ From step timestamps in the synthetic log:
 ## 9. Simulate and What-if planner
 
 **One simulated day:** 07:00 to 07:00 next day (24 h of activity; unfinished patients measured up to the end).
+- Live day (board only): Ward B has 1 of its 2 housekeepers ("called in sick"), which creates the cleaning bottleneck in the guided demo. The simulation uses full staffing unless the What-if planner changes it.
 - Morning: 10 beds per ward start occupied with a discharge approved between 08:00 and 14:00 (uniform); the rest start occupied with no discharge that day.
 - ED admission requests: 16 per day, arrival times uniform 07:00–21:00. Each needs male/female 50/50, isolation 10%.
 - A bed is assigned to the longest-waiting matching ED patient the moment it becomes ready.

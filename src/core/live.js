@@ -54,7 +54,7 @@ export function createLiveState() {
   [['B14', 560], ['B15', 590], ['B16', 610], ['B17', 630], ['B18', 650]].forEach(([id, at]) => ready(id, at));
 
   // Ward B (female) — the bottleneck
-  pending('B28', 590, true, true); done('B28', 'transport', 605, 630, 'transporter'); active('B28', 'pharmacy', 650);
+  pending('B28', 590, true, true); done('B28', 'transport', 605, 630, 'transporter'); active('B28', 'pharmacy', 620);
   pending('B29', 600, true, true); queue('B29', 'pharmacy'); active('B29', 'transport', 650);
   pending('B30', 610, true, false); queue('B30', 'pharmacy');
   pending('B31', 620, true, true); queue('B31', 'pharmacy'); queue('B31', 'transport');

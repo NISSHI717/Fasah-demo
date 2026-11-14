@@ -47,13 +47,13 @@ test('approving the plan makes the target met', () => {
 
 test('when reordering is not enough the engine borrows a housekeeper', () => {
   const s = createLiveState();
-  const plan = findPlan(s, F3(730));
+  const plan = findPlan(s, { by: 700, needs: [{ sex: 'F', isolation: false, count: 2 }] });
   assert.equal(plan.status, 'plan');
   const borrow = plan.changes.find(c => c.type === 'borrow');
   assert.ok(borrow);
   assert.equal(borrow.ward, 'B');
   assert.equal(borrow.approver, 'Charge nurse, lending ward');
-  assert.ok(plan.after.achievedAt <= 730);
+  assert.ok(plan.after.achievedAt <= 700);
 });
 
 test('an already-met target is on track with no changes', () => {

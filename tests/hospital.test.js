@@ -32,7 +32,9 @@ test('roles, approvers, pool and durations', () => {
   assert.equal(poolAt(600 + 1440), 1);
   assert.deepEqual(durationRange('cleaning', bedById('B35')), [45, 60, 90]);
   assert.deepEqual(durationRange('cleaning', bedById('B20')), [20, 30, 45]);
-  assert.equal(typicalOf('pharmacy', bedById('B20')), 40);
+  assert.equal(typicalOf('pharmacy', bedById('B20')), 90);
+  assert.deepEqual(durationRange('pharmacy', bedById('B20')), [45, 90, 240]);
+  assert.deepEqual(durationRange('transport', bedById('B20')), [20, 45, 120]);
   assert.equal(CONFIG.staff.housekeeper, 2);
 });
 

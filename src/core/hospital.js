@@ -4,9 +4,12 @@ export const CONFIG = {
   staff: { housekeeper: 2, pharmacist: 1, transporter: 1 }, // per ward
   // Spare housekeepers other wards can lend, by time of day: [startMin, endMin, count]
   pool: [[480, 720, 1], [720, 960, 0], [960, 1320, 1]],
-  durations: { // minutes: [fast, typical, slow]
-    pharmacy: [20, 40, 90],
-    transport: [10, 25, 60],
+  // minutes: [fast, typical, slow]. Pharmacy and transport are calibrated so the
+  // Normal simulation reproduces the Ensiab baseline "time till discharge" of
+  // 265 min (Alotaibi et al., BMJ Open Quality 2021) — see tests/simulate.test.js.
+  durations: {
+    pharmacy: [45, 90, 240],
+    transport: [20, 45, 120],
     cleaning: [20, 30, 45],
     cleaningIsolation: [45, 60, 90],
   },

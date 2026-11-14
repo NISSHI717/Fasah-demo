@@ -11,16 +11,16 @@ test('a bed needing pharmacy and transport goes through the whole chain', () => 
   const s = createState({ now: 600 });
   approve(s, 'B20', { needsPharmacy: true, needsTransport: true });
   assert.equal(s.beds.B20.status, 'discharge_pending');
-  advance(s, 700);
-  assert.equal(s.now, 700);
+  advance(s, 750);
+  assert.equal(s.now, 750);
   assert.equal(s.beds.B20.status, 'ready');
   const byStep = Object.fromEntries(s.log.map(e => [e.step, e]));
   assert.equal(s.log.length, 3);
-  assert.equal(byStep.pharmacy.doneAt, 640);
-  assert.equal(byStep.transport.doneAt, 625);
-  assert.equal(byStep.cleaning.requestedAt, 640);
-  assert.equal(byStep.cleaning.startedAt, 640);
-  assert.equal(byStep.cleaning.doneAt, 670);
+  assert.equal(byStep.pharmacy.doneAt, 690);
+  assert.equal(byStep.transport.doneAt, 645);
+  assert.equal(byStep.cleaning.requestedAt, 690);
+  assert.equal(byStep.cleaning.startedAt, 690);
+  assert.equal(byStep.cleaning.doneAt, 720);
 });
 
 test('with one housekeeper the second cleaning waits for the first', () => {
